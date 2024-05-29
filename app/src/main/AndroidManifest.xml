@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.FutyManager"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="31">
+        <activity
+            android:name=".SeleccionarEquipo"
+            android:exported="false" />
+        <activity
+            android:name=".EliminarEquipos"
+            android:exported="false" />
+        <activity
+            android:name=".EliminarJugador"
+            android:exported="false" />
+        <activity
+            android:name=".SeleccionarEliminar"
+            android:exported="false" />
+        <activity
+            android:name=".ConsultaTorneo"
+            android:exported="false" />
+        <activity
+            android:name=".ConsultaFutbolistas"
+            android:exported="false" />
+        <activity
+            android:name=".ConsultaEquipos"
+            android:exported="false" />
+        <activity
+            android:name=".SeleccionarConsulta"
+            android:exported="false" />
+        <activity
+            android:name=".ModificarInfoEquipos"
+            android:exported="false" />
+        <activity
+            android:name=".ModificarInfoAdmins"
+            android:exported="false" />
+        <activity
+            android:name=".SeleccionarModificacion"
+            android:exported="false" />
+        <activity
+            android:name=".ModificarInfo"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegistrarJugador"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RegistrarEquipo"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Principal"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
