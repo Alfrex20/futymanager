@@ -29,8 +29,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * La actividad ModificarInfo permite a los administradores y a los mismos futbolistas
+ * modificar la información de los jugadores existentes.
+ */
 public class ModificarInfo extends AppCompatActivity {
 
+    // Declaración de variables para los elementos de la interfaz de usuario
     Spinner spinnerID;
     EditText etUsuario, etContrasena, etNombre, etApellidos, etEdad, etPosicion, etDorsal, etLesiones;
     Button btnAceptar, btnRegresar;
@@ -43,6 +48,7 @@ public class ModificarInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_modificar_info);
 
+        // Inicialización de los elementos de la interfaz de usuario
         spinnerID = findViewById(R.id.spinnerID);
         etUsuario = findViewById(R.id.etUsuario);
         etContrasena = findViewById(R.id.etContrasena);
@@ -55,30 +61,37 @@ public class ModificarInfo extends AppCompatActivity {
         btnAceptar = findViewById(R.id.btnAceptar);
         btnRegresar = findViewById(R.id.btnRegresar);
 
+        // Inicialización de la cola de solicitudes Volley
         requestQueue = Volley.newRequestQueue(this);
 
-        // Load IDs into Spinner
+        // Cargar los IDs de los jugadores en el Spinner
         loadIDs();
 
-        // Set item selected listener on spinner
+        // Configurar el listener para cuando se selecciona un elemento del Spinner
         spinnerID.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedID = idsList.get(position);
+                // Cargar los datos del jugador seleccionado
                 loadUserData(selectedID);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+                // No hacer nada
             }
         });
 
+        // Configurar el listener para el botón Regresar
         btnRegresar.setOnClickListener(v -> finish());
 
+        // Configurar el listener para el botón Aceptar
         btnAceptar.setOnClickListener(v -> updateUserData());
     }
 
+    /**
+     * Método para cargar los IDs de los jugadores desde el servidor y mostrarlos en el Spinner.
+     */
     private void loadIDs() {
         String url = "http://192.168.56.1/developeru/get_idsfutbolistas.php";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -93,13 +106,15 @@ public class ModificarInfo extends AppCompatActivity {
                                 String id = jsonObject.getString("ID");
                                 idsList.add(id);
                             }
-                            adapter = new ArrayAdapter<>(ModificarInfo.this, android.R.layout.simple_spinner_item, idsList);
+                            adapter = new ArrayAdapter<>(ModificarInfo.this, android.R.layout.simple_spinner_item,
+                                    idsList);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinnerID.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(ModificarInfo.this, "Error parsing JSON", Toast.LENGTH_SHORT).show();
-                            Log.e("ERROR", "Error parsing JSON: " + e.getMessage());
+                            Toast.makeText(ModificarInfo.this, "Error al analizar JSON",
+                                    Toast.LENGTH_SHORT).show();
+                            Log.e("ERROR", "Error al analizar JSON: " + e.getMessage());
                         }
                     }
                 },
@@ -107,14 +122,19 @@ public class ModificarInfo extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Toast.makeText(ModificarInfo.this, "Error loading IDs", Toast.LENGTH_SHORT).show();
-                        Log.e("ERROR", "Error loading IDs: " + error.getMessage());
+                        Toast.makeText(ModificarInfo.this, "Error al cargar los IDs",
+                                Toast.LENGTH_SHORT).show();
+                        Log.e("ERROR", "Error al cargar los IDs: " + error.getMessage());
                     }
                 });
 
         requestQueue.add(jsonArrayRequest);
     }
 
+    /**
+     * Método para cargar los datos del jugador seleccionado desde el servidor y mostrarlos en los campos de texto.
+     * @param id El ID del jugador a cargar.
+     */
     private void loadUserData(String id) {
         String url = "http://192.168.56.1/developeru/get_user_datafutbolistas.php?ID=" + id;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -132,6 +152,7 @@ public class ModificarInfo extends AppCompatActivity {
                             String dorsal = response.getString("Dorsal");
                             String lesiones = response.getString("Lesiones");
 
+                            // Configurar los campos de texto con los datos del jugador
                             etUsuario.setText(usuario);
                             etContrasena.setText(contrasena);
                             etNombre.setText(nombre);
@@ -142,8 +163,8 @@ public class ModificarInfo extends AppCompatActivity {
                             etLesiones.setText(lesiones);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(ModificarInfo.this, "Error parsing JSON", Toast.LENGTH_SHORT).show();
-                            Log.e("ERROR", "Error parsing JSON: " + e.getMessage());
+                            Toast.makeText(ModificarInfo.this, "Error al analizar JSON", Toast.LENGTH_SHORT).show();
+                            Log.e("ERROR", "Error al analizar JSON: " + e.getMessage());
                         }
                     }
                 },
@@ -151,14 +172,18 @@ public class ModificarInfo extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Toast.makeText(ModificarInfo.this, "Error loading user data", Toast.LENGTH_SHORT).show();
-                        Log.e("ERROR", "Error loading user data: " + error.getMessage());
+                        Toast.makeText(ModificarInfo.this, "Error al cargar los datos del usuario",
+                                Toast.LENGTH_SHORT).show();
+                        Log.e("ERROR", "Error al cargar los datos del usuario: " + error.getMessage());
                     }
                 });
 
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Método para actualizar los datos del jugador en el servidor.
+     */
     private void updateUserData() {
         String url = "http://192.168.56.1/developeru/actualizarFutbolista.php";
 
@@ -177,7 +202,8 @@ public class ModificarInfo extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         // Manejar el error de la solicitud
                         error.printStackTrace();
-                        Toast.makeText(ModificarInfo.this, "Error updating data: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ModificarInfo.this, "Error al actualizar los datos: " +
+                                error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }) {
             @Override

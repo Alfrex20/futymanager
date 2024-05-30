@@ -30,14 +30,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * La actividad EliminarJugador permite cargar, mostrar y eliminar jugadores por su id
+ */
 public class EliminarJugador extends AppCompatActivity {
 
-    Spinner spinnerID;
-    EditText etUsuario, etContrasena, etNombre, etApellidos, etEdad, etPosicion, etDorsal, etLesiones;
-    Button btnAceptar, btnRegresar;
-    RequestQueue requestQueue;
-    ArrayList<String> idsList = new ArrayList<>();
-    ArrayAdapter<String> adapter;
+    private Spinner spinnerID;
+    private EditText etUsuario, etContrasena, etNombre, etApellidos, etEdad, etPosicion, etDorsal, etLesiones;
+    private Button btnAceptar, btnRegresar;
+    private RequestQueue requestQueue;
+    private ArrayList<String> idsList = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -45,6 +48,7 @@ public class EliminarJugador extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_eliminar_jugador);
 
+        // Inicialización de las vistas
         spinnerID = findViewById(R.id.spinnerID);
         etUsuario = findViewById(R.id.etUsuario);
         etContrasena = findViewById(R.id.etContrasena);
@@ -57,12 +61,13 @@ public class EliminarJugador extends AppCompatActivity {
         btnAceptar = findViewById(R.id.btnAceptar);
         btnRegresar = findViewById(R.id.btnRegresar);
 
+        // Inicialización de la cola de solicitudes
         requestQueue = Volley.newRequestQueue(this);
 
-        // Load IDs into Spinner
+        // Cargar IDs en el Spinner
         loadIDs();
 
-        // Set item selected listener on spinner
+        // Configurar listener para el Spinner
         spinnerID.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -72,15 +77,20 @@ public class EliminarJugador extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // Do nothing
+                // No hacer nada
             }
         });
 
+        // Configurar listener para el botón regresar
         btnRegresar.setOnClickListener(v -> finish());
 
+        // Configurar listener para el botón aceptar
         btnAceptar.setOnClickListener(v -> deleteUser());
     }
 
+    /**
+     * Método para cargar los IDs de los jugadores desde el servidor y mostrarlos en el Spinner.
+     */
     private void loadIDs() {
         String url = "http://192.168.56.1/developeru/get_idsfutbolistas.php";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -95,12 +105,14 @@ public class EliminarJugador extends AppCompatActivity {
                                 String id = jsonObject.getString("ID");
                                 idsList.add(id);
                             }
-                            adapter = new ArrayAdapter<>(EliminarJugador.this, android.R.layout.simple_spinner_item, idsList);
+                            adapter = new ArrayAdapter<>(EliminarJugador.this, android.R.layout.simple_spinner_item,
+                                    idsList);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinnerID.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(EliminarJugador.this, "Error parsing JSON", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EliminarJugador.this, "Error parsing JSON",
+                                    Toast.LENGTH_SHORT).show();
                             Log.e("ERROR", "Error parsing JSON: " + e.getMessage());
                         }
                     }
@@ -117,6 +129,9 @@ public class EliminarJugador extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
+    /**
+     * Método para cargar los datos del jugador seleccionado desde el servidor y mostrarlos en los campos de texto.
+     */
     private void loadUserData(String id) {
         String url = "http://192.168.56.1/developeru/get_user_datafutbolistas.php?ID=" + id;
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
@@ -144,7 +159,8 @@ public class EliminarJugador extends AppCompatActivity {
                             etLesiones.setText(lesiones);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(EliminarJugador.this, "Error parsing JSON", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EliminarJugador.this, "Error parsing JSON",
+                                    Toast.LENGTH_SHORT).show();
                             Log.e("ERROR", "Error parsing JSON: " + e.getMessage());
                         }
                     }
@@ -153,7 +169,8 @@ public class EliminarJugador extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Toast.makeText(EliminarJugador.this, "Error loading user data", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EliminarJugador.this, "Error loading user data",
+                                Toast.LENGTH_SHORT).show();
                         Log.e("ERROR", "Error loading user data: " + error.getMessage());
                     }
                 });
@@ -161,6 +178,9 @@ public class EliminarJugador extends AppCompatActivity {
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Método para eliminar el jugador seleccionado de la base de datos del servidor.
+     */
     private void deleteUser() {
         String url = "http://192.168.56.1/developeru/EliminarJugador.php";
 
@@ -181,7 +201,8 @@ public class EliminarJugador extends AppCompatActivity {
                     public void onErrorResponse(VolleyError error) {
                         // Manejar el error de la solicitud
                         error.printStackTrace();
-                        Toast.makeText(EliminarJugador.this, "Error deleting user: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EliminarJugador.this, "Error deleting user: " +
+                                error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }) {
             @Override

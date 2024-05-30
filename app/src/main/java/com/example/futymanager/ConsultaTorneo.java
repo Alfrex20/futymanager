@@ -9,8 +9,6 @@ import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import java.util.Collections;
-import java.util.Comparator;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,11 +22,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+/**
+ * La actividad ConsultaTorneo muestra una lista de equipos del torneo
+ */
 public class ConsultaTorneo extends AppCompatActivity {
 
-    private static final String TAG = "ConsultaTorneo";
+    private static final String TAG = "ConsultaTorneo"; // Para loguear información
     private ListView listView;
     private List<Torneo> equiposList;
     private TorneoAdapter adapter;
@@ -40,11 +43,13 @@ public class ConsultaTorneo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_consulta_torneo);
 
+        // Inicializar ListView y su adaptador
         listView = findViewById(R.id.listViewEquipos);
         equiposList = new ArrayList<>();
         adapter = new TorneoAdapter(this, equiposList);
         listView.setAdapter(adapter);
 
+        // Inicializar el botón Regresar y su listener
         btnRegresar = findViewById(R.id.btnRegresar);
         btnRegresar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,21 +59,26 @@ public class ConsultaTorneo extends AppCompatActivity {
             }
         });
 
+        // Obtener datos desde el servidor
         obtenerDatos();
     }
 
+    /**
+     * Método para obtener los datos de los equipos del torneo desde el servidor.
+     */
     private void obtenerDatos() {
-        String url = "http://192.168.56.1/developeru/consultaEquipos.php";
-        Log.d(TAG, "URL: " + url); // Log URL
+        String url = "http://192.168.56.1/developeru/consultaEquipos.php"; // URL del servicio web
+        Log.d(TAG, "URL: " + url); // Loguear la URL
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
+        // Crear una solicitud para obtener un array de JSON
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d(TAG, "Response received"); // Log response
-                        equiposList.clear(); // Limpia la lista antes de agregar nuevos datos
+                        Log.d(TAG, "Response received"); // Loguear recepción de respuesta
+                        equiposList.clear(); // Limpiar la lista antes de agregar nuevos datos
                         try {
                             for (int i = 0; i < response.length(); i++) {
                                 JSONObject equipo = response.getJSONObject(i);
@@ -83,19 +93,24 @@ public class ConsultaTorneo extends AppCompatActivity {
                                 int golesEnContra = equipo.getInt("golesEnContra");
                                 int puntos = equipo.getInt("Puntos");
 
-                                Log.d(TAG, "Equipo: " + nombre + ", Entrenador: " + entrenador + ", PJ: " + partidosJugados + ", PG: " + partidosGanados + ", PP: " + partidosPerdidos + ", PE: " + partidosEmpatados + ", GM: " + golesMarcados + ", GE: " + golesEnContra + ", Puntos: " + puntos); // Log cada equipo
+                                // Loguear cada equipo
+                                Log.d(TAG, "Equipo: " + nombre + ", Entrenador: " + entrenador + ", PJ: " +
+                                        partidosJugados + ", PG: " + partidosGanados + ", PP: " + partidosPerdidos + ", " +
+                                        "PE: " + partidosEmpatados + ", GM: " + golesMarcados + ", GE: " + golesEnContra +
+                                        ", Puntos: " + puntos);
 
-                                equiposList.add(new Torneo(nombre, entrenador, partidosJugados, partidosGanados, partidosPerdidos, partidosEmpatados, golesMarcados, golesEnContra, puntos));
+                                // Crear un objeto Torneo y agregarlo a la lista
+                                equiposList.add(new Torneo(nombre, entrenador, partidosJugados, partidosGanados,
+                                        partidosPerdidos, partidosEmpatados, golesMarcados, golesEnContra, puntos));
                             }
 
+                            // Ordenar la lista de equipos por puntos en orden descendente
                             Collections.sort(equiposList, new Comparator<Torneo>() {
                                 @Override
                                 public int compare(Torneo equipo1, Torneo equipo2) {
-                                    // Ordenar de mayor a menor número de puntos
                                     return Integer.compare(equipo2.getPuntos(), equipo1.getPuntos());
                                 }
                             });
-
 
                             adapter.notifyDataSetChanged(); // Notificar al adaptador sobre el cambio
                         } catch (JSONException e) {
@@ -107,10 +122,11 @@ public class ConsultaTorneo extends AppCompatActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                Log.e(TAG, "Error: " + error.toString()); // Log error
+                Log.e(TAG, "Error: " + error.toString()); // Loguear error
             }
         });
 
+        // Agregar la solicitud a la cola de solicitudes
         queue.add(jsonArrayRequest);
     }
 }

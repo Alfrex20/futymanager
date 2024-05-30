@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Contenedor principal de tipo LinearLayout -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,7 +12,7 @@
     tools:context=".ConsultaFutbolistas">
 
 
-
+    <!-- TextView para el título de la actividad -->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,11 +23,11 @@
         android:layout_gravity="center_vertical"
         android:background="@color/colorSuperior"
         />
-
+    <!-- Espacio entre el título y el contenido -->
     <Space
         android:layout_width="match_parent"
         android:layout_height="30dp" />
-
+    <!-- Contenedor LinearLayout para el contenido principal -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -38,13 +39,14 @@
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp">
 
+        <!-- ImageView para mostrar una imagen -->
         <ImageView
             android:layout_width="110dp"
             android:layout_height="92dp"
             android:layout_gravity="center"
             android:src="@drawable/futymanager" />
 
-        <!-- ListView for displaying the footballers -->
+        <!-- ListView para mostrar la lista de futbolistas -->
         <ListView
             android:id="@+id/listView"
             android:layout_width="match_parent"
@@ -53,13 +55,14 @@
             android:divider="@android:color/darker_gray"
             android:dividerHeight="1dp"/>
 
-        <!-- LinearLayout for buttons -->
+        <!-- LinearLayout para contener los botones -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_horizontal">
 
+            <!-- Botón para regresar -->
             <Button
                 android:id="@+id/btnRegresar"
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"

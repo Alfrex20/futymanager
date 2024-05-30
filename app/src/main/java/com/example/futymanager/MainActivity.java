@@ -24,23 +24,33 @@ import com.android.volley.toolbox.Volley;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * MainActivity es la actividad principal que maneja la interfaz de inicio de sesión.
+ */
 public class MainActivity extends AppCompatActivity {
 
+    // Componentes de la interfaz de usuario
     EditText edtUsuario, edtPass, edtDni;
     Button bnIniciar;
 
+    // Variables para almacenar los valores ingresados por el usuario
     String Usuario, Contrasena, Dni;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Inicialización de los componentes de la interfaz de usuario
         edtUsuario = findViewById(R.id.etUsuario);
         edtPass = findViewById(R.id.etPass);
         edtDni = findViewById(R.id.etDni);
         bnIniciar = findViewById(R.id.btnIniciar);
+
+        // Recuperar las preferencias guardadas previamente
         recuperarPreferencias();
 
+        // Configuración del botón de inicio de sesión
         bnIniciar.setOnClickListener(v -> {
             // Obtener los valores de los campos de texto
             Usuario = edtUsuario.getText().toString();
@@ -49,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
             // Verificar si los campos están vacíos
             if (TextUtils.isEmpty(Usuario) || TextUtils.isEmpty(Contrasena)) {
-                Toast.makeText(MainActivity.this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "Por favor, complete todos los campos",
+                        Toast.LENGTH_SHORT).show();
             } else {
                 // Si no están vacíos, realizar la validación del usuario
                 validarUsuario("http://192.168.56.1/developeru/validar_usuario.php");
@@ -57,7 +68,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Realiza la validación del usuario con el servidor.
+     * @param URL La URL del servidor para validar el usuario.
+     */
     private void validarUsuario(String URL) {
+        // Crear una solicitud POST para validar el usuario
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL, response -> {
             switch (response) {
                 case "OK":
@@ -80,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         }) {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
+                // Crear un mapa con los parámetros de la solicitud
                 Map<String, String> parametros = new HashMap<>();
                 parametros.put("Usuario", Usuario);
                 parametros.put("Contrasena", Contrasena);
@@ -89,10 +106,16 @@ public class MainActivity extends AppCompatActivity {
                 return parametros;
             }
         };
+
+        // Añadir la solicitud a la cola de solicitudes de Volley
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(stringRequest);
     }
 
+    /**
+     * Guarda las preferencias del usuario en SharedPreferences.
+     * @param isAdmin Indica si el usuario es administrador.
+     */
     private void guardarPreferencias(boolean isAdmin) {
         SharedPreferences preferences = getSharedPreferences("preferenciasLogin", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
@@ -108,6 +131,9 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    /**
+     * Recupera las preferencias del usuario de SharedPreferences.
+     */
     private void recuperarPreferencias() {
         SharedPreferences preferences = getSharedPreferences("preferenciasLogin", Context.MODE_PRIVATE);
         edtUsuario.setText(preferences.getString("Usuario", ""));

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Contenedor principal de tipo LinearLayout -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp">
 
+    <!-- TextView para mostrar el nombre y apellidos del futbolista -->
     <TextView
         android:id="@+id/tvNombreApellidos"
         android:layout_width="wrap_content"
@@ -12,14 +14,14 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:textColor="@android:color/black" />
-
+    <!-- TextView para mostrar detalles del futbolista (edad, posición y dorsal) -->
     <TextView
         android:id="@+id/tvDetalles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
         android:textColor="@android:color/black" />
-
+    <!-- TextView para mostrar el nombre del equipo del futbolista -->
     <TextView
         android:id="@+id/tvEquipo"
         android:layout_width="wrap_content"

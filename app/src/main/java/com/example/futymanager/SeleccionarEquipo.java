@@ -27,13 +27,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * La actividad SeleccionarEquipo permite al usuario seleccionar un equipo de una lista desplegable
+ */
 public class SeleccionarEquipo extends AppCompatActivity {
 
-    Spinner spinnerID;
-    Button btnAceptar, btnRegresar;
-    RequestQueue requestQueue;
-    ArrayList<String> namesList = new ArrayList<>();
-    ArrayAdapter<String> adapter;
+    private Spinner spinnerID;
+    private Button btnAceptar, btnRegresar;
+    private RequestQueue requestQueue;
+    private ArrayList<String> namesList = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
 
     private static final String TAG = "SeleccionarEquipo";
 
@@ -42,17 +45,21 @@ public class SeleccionarEquipo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seleccionar_equipo);
 
+        // Inicialización de las vistas
         spinnerID = findViewById(R.id.spinnerID);
         btnAceptar = findViewById(R.id.btnAceptar);
         btnRegresar = findViewById(R.id.btnRegresar);
 
+        // Inicialización de la cola de solicitudes
         requestQueue = Volley.newRequestQueue(this);
 
-        // Load Names into Spinner
+        // Cargar nombres en el Spinner
         loadNames();
 
+        // Configurar listener para el botón regresar
         btnRegresar.setOnClickListener(v -> finish());
 
+        // Configurar listener para el botón aceptar
         btnAceptar.setOnClickListener(v -> {
             int selectedPosition = spinnerID.getSelectedItemPosition();
             String selectedName = namesList.get(selectedPosition);
@@ -61,6 +68,9 @@ public class SeleccionarEquipo extends AppCompatActivity {
         });
     }
 
+    /**
+     * Método para cargar los nombres de los equipos desde el servidor y mostrarlos en el Spinner.
+     */
     private void loadNames() {
         String url = "http://192.168.56.1/developeru/get_team_names.php";
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
@@ -75,12 +85,14 @@ public class SeleccionarEquipo extends AppCompatActivity {
                                 String name = jsonObject.getString("Nombre");
                                 namesList.add(name);
                             }
-                            adapter = new ArrayAdapter<>(SeleccionarEquipo.this, android.R.layout.simple_spinner_item, namesList);
+                            adapter = new ArrayAdapter<>(SeleccionarEquipo.this,
+                                    android.R.layout.simple_spinner_item, namesList);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinnerID.setAdapter(adapter);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            Toast.makeText(SeleccionarEquipo.this, "Error parsing JSON", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SeleccionarEquipo.this, "Error parsing JSON",
+                                    Toast.LENGTH_SHORT).show();
                             Log.e(TAG, "Error parsing JSON: " + e.getMessage());
                         }
                     }
@@ -89,7 +101,8 @@ public class SeleccionarEquipo extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         error.printStackTrace();
-                        Toast.makeText(SeleccionarEquipo.this, "Error loading team names", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SeleccionarEquipo.this, "Error loading team names",
+                                Toast.LENGTH_SHORT).show();
                         Log.e(TAG, "Error loading team names: " + error.getMessage());
                     }
                 });
@@ -97,6 +110,11 @@ public class SeleccionarEquipo extends AppCompatActivity {
         requestQueue.add(jsonArrayRequest);
     }
 
+    /**
+     * Método para enviar el nombre del equipo seleccionado al servidor y actualizarlo para el usuario actual.
+     *
+     * @param teamName El nombre del equipo seleccionado.
+     */
     private void sendSelectedTeamToServer(String teamName) {
         SharedPreferences preferences = getSharedPreferences("preferenciasLogin", Context.MODE_PRIVATE);
         String usuario = preferences.getString("Usuario", "");
@@ -107,7 +125,8 @@ public class SeleccionarEquipo extends AppCompatActivity {
                     Toast.makeText(SeleccionarEquipo.this, response, Toast.LENGTH_SHORT).show();
                 },
                 error -> {
-                    Toast.makeText(SeleccionarEquipo.this, "Error updating team: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SeleccionarEquipo.this, "Error updating team: " +
+                            error.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Error updating team: " + error.getMessage());
                 }) {
             @Override
